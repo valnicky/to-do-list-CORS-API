@@ -14,11 +14,14 @@
         <form class="container__addtask">
             <div class="container__task">
                 <p class="container__p">Add a task</p>
-                <p class="container__eg">E.g. Buy groceries</p>
+                <input class="container__eg" placeholder="E.g. Buy groceries" />
             </div>
-            <button class="container__btn" type="text">+ Add task</button>
+            <button class="container__btn" type="submit">+ Add task</button>
         </form>
         <div class="container__list">
+            <div class="todolist__empty-state">
+                Fetching your tasks... Please wait a bit... ⏰
+            </div>
         </div>
     </section>
     <!-- zlFetch Library -->

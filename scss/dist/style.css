@@ -20,11 +20,15 @@ body .container .container__addtask .container__task .container__p {
   text-transform: uppercase;
   color: #e9f9f1;
 }
-body .container .container__addtask .container__task .container__eg {
+body .container .container__addtask .container__task .container__eg,
+body .container .container__addtask .container__task .container__eg ::placeholder {
   font-weight: 100;
   font-size: 2em;
   margin: 0;
   color: #e2dddd;
+  background: #464647;
+  border: none;
+  font-style: italic;
 }
 body .container .container__addtask .container__btn {
   background: #80b386;

@@ -18,11 +18,15 @@ body {
                     text-transform: uppercase;
                     color: #e9f9f1;
                 }
-                .container__eg {
+                .container__eg,
+                .container__eg ::placeholder {
                     font-weight: 100;
                     font-size: 2em;
                     margin: 0;
                     color: #e2dddd;
+                    background: #464647;
+                    border: none;
+                    font-style: italic;
                 }
             }
             .container__btn {

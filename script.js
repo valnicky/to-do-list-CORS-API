@@ -13,17 +13,24 @@ const auth = {
     })
     .then(response => console.log(response.body))
     .catch(error => console.log(error));*/
-
+const todolist = document.querySelector('body .container .container__list');
+const emptyStateDiv = todolist.querySelector('.todolist__empty-state');
 const promises = zlFetch(`${rootendpoint}/tasks`, { auth });
 
 promises.then(response => {
         const tasks = response.body;
+        //append tasks to DOM
         tasks.forEach(task => {
             const taskElement = makeTaskElement1(task);
-            const contenedor = document.querySelector('body .container .container__list');
-            contenedor.appendChild(taskElement);
 
+            todolist.appendChild(taskElement);
         })
+
+        const todolistbtn = document.querySelector('.container__btn');
+        todolistbtn.addEventListener('submit', addtasktodom);
+
+        //change empty state text
+        emptyStateDiv.textContent = 'Your todo list is empty!  🎉'
     })
     .catch(error => console.error(error));
 
@@ -39,12 +46,37 @@ function makeTaskElement(elem) {
 const makeTaskElement1 = ({ id, name, done }) => {
     const taskElement = document.createElement('li');
     taskElement.classList.add('task');
-    taskElement.innerHTML = DOMPurify.sanitize(`
+    taskElement.innerHTML = (`
     <input type="checkbox" id="${id}/>"
     <label for="${id}">...</label>
-    <span class="tasl__name">${name}</span>
+    <span class="task__name">${name}</span>
     <button type="button" class="task__delete-button">
     <svg viewBox="0 0 20 20">... </svg>
     </button>`);
     return taskElement;
+}
+
+function addtasktodom(event) {
+    event.preventDefault()
+
+    const newTaskField = todolist.querySelector('input');
+    const inputValue = DOMPurify.sanitize(newTaskField.value.trim());
+
+    const id = generateUniqueString(10);
+    /*   const taskElement = makeTaskElement(
+           id,
+           name: inputValue,
+           done: false
+       );*/
+
+
+    zlFetch.post(`${rootendpoint}/tasks`, {
+        auth,
+        body: {
+            // Information about the task
+            name: DOMPurify.sanitize(inputValue)
+        }
+    }).then(response => {
+        console.log(response.body);
+    })
 }
