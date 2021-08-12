@@ -6,12 +6,40 @@ body {
         justify-content: center;
         background: #3f459b;
         .container__addtask {
-            height: 100px;
+            padding: 1em 2em;
+            height: 80px;
             background: #464647;
+            color: #f3e5e5;
+            display: flex;
+            flex-direction: row;
+            .container__task {
+                flex-grow: 1;
+                .container__p {
+                    text-transform: uppercase;
+                    color: #e9f9f1;
+                }
+                .container__eg {
+                    font-weight: 100;
+                    font-size: 2em;
+                    margin: 0;
+                    color: #e2dddd;
+                }
+            }
+            .container__btn {
+                background: #80b386;
+                color: #e4f9f9;
+                font-size: 1.3em;
+            }
         }
         .container__list {
-            background: #c9c9df;
-            color: rgba(35, 131, 43, 0.333);
+            padding: 1em 2em;
+            background: #ededfb;
+            color: #141c8a;
+        }
+        li {
+            padding: 5px;
+            margin: 5px;
+            font-size: 1.2em;
         }
     }
 }
