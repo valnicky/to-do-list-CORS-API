@@ -14,7 +14,7 @@ body .container .container__addtask {
   flex-direction: row;
 }
 body .container .container__addtask .container__task {
-  flex-grow: 1;
+  width: 70%;
 }
 body .container .container__addtask .container__task .container__p {
   text-transform: uppercase;
@@ -31,6 +31,7 @@ body .container .container__addtask .container__task .container__eg ::placeholde
   font-style: italic;
 }
 body .container .container__addtask .container__btn {
+  width: 30%;
   background: #80b386;
   color: #e4f9f9;
   font-size: 1.3em;

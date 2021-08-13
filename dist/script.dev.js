@@ -2,17 +2,20 @@
 
 var rootendpoint = 'https://api.learnjavascript.today';
 var auth = {
-  username: 'your-username',
-  password: 'your-password'
+  username: 'valery',
+  password: 'v123456'
 };
-/*zlFetch.post(`${rootendpoint}/users`, {
+/*
+zlFetch.post(`${rootendpoint}/users`, {
         body: {
-            username: 'your-username',
-            password: 'your-password'
+            username: 'valery',
+            password: 'v123456'
         }
     })
     .then(response => console.log(response.body))
-    .catch(error => console.log(error));*/
+    .catch(error => console.log(error));
+id: "61165e4fed641c01ca771381"
+*/
 
 var todolist = document.querySelector('body .container .container__list');
 var emptyStateDiv = todolist.querySelector('.todolist__empty-state');
@@ -20,16 +23,20 @@ var promises = zlFetch("".concat(rootendpoint, "/tasks"), {
   auth: auth
 });
 var todolistbtn = document.querySelector('.container__btn');
-todolistbtn.addEventListener('submit', addtasktodom); // .then(response => console.log(response.body))
+var newTaskField = document.querySelector('body .container .container__addtask .container__task .container__eg');
+todolistbtn.addEventListener('click', addtasktodom);
+newTaskField.addEventListener('click', function () {
+  newTaskField.value = '';
+});
 
-function makeTaskElement(elem) {
+function makeTaskElement1(elem) {
   var li = document.createElement('li');
   li.innerHTML = "".concat(elem); // console.log(li);
 
   return li;
 }
 
-var makeTaskElement1 = function makeTaskElement1(_ref) {
+var makeTaskElement = function makeTaskElement(_ref) {
   var id = _ref.id,
       name = _ref.name,
       done = _ref.done;
@@ -42,17 +49,18 @@ var makeTaskElement1 = function makeTaskElement1(_ref) {
 function addtasktodom(event) {
   event.preventDefault(); //get value of task
 
-  var newTaskField = todolist.querySelector('input');
   var inputValue = newTaskField.value.trim();
-  console.log("input value " + inputValue);
-  var id = generateUniqueString(10);
-  var taskElement = makeTaskElement1({
-    id: id,
-    name: inputValue,
-    done: false
-  }); //prevent adding of empty task
+  /*const id = generateUniqueString(10);
+  const taskElement = makeTaskElement({
+      id,
+      name: inputValue,
+      done: false
+  });*/
+  //prevent adding of empty task
 
-  if (!inputValue) return; //give indication that we're adding a task
+  if (!inputValue) return; //disable btn
+
+  todolistbtn.setAttribute('disabled', true); //give indication that we're adding a task
 
   todolistbtn.textContent = 'Adding task...'; //sends POST request...
 
@@ -60,35 +68,40 @@ function addtasktodom(event) {
     auth: auth,
     body: {
       // Information about the task
-      name: DOMPurify.sanitize(inputValue)
+      name: inputValue //DOMPurify.sanitize(
+
     }
   }).then(function (response) {
     console.log(response.body); //append task to DOM
 
-    var tasks = response.body; //append tasks to DOM
+    var task = response.body; //append tasks to DOM
 
-    tasks.forEach(function (task) {
-      var taskElement = makeTaskElement1(task);
-      todolist.appendChild(taskElement);
-    });
-  })["catch"](function (error) {
-    return console.error(error);
-  })["finally"](function (_) {
-    //change button text back to original text 
-    todolistbtn.textContent = 'Add task';
-  });
-  promises.then(function (response) {
-    //append task to DOM
-    var task = response.body;
-    var taskElement = makeTaskElement1(task);
+    var taskElement = makeTaskElement(task);
     todolist.appendChild(taskElement); //clear the new task field
 
     newTaskField.value = ''; //bring focus back to input field
 
-    newTaskField.focus(); //change empty state text
-
-    emptyStateDiv.textContent = 'Your todo list is empty!  🎉';
+    newTaskField.focus();
   })["catch"](function (error) {
     return console.error(error);
+  })["finally"](function (_) {
+    //enables btn 
+    todolistbtn.removeAttribute('disabled'); //change button text back to original text 
+
+    todolistbtn.textContent = 'Add task';
   });
 }
+/*
+promises.then(response => {
+        //append tasks to DOM
+        const tasks = response.body;
+        tasks.forEach(task => {
+            const taskElement = makeTaskElement(task);
+            todolist.appendChild(taskElement);
+        })
+
+
+        //change empty state text
+        emptyStateDiv.textContent = 'Your todo list is empty!  🎉'
+    })
+    .catch(error => console.error(error));*/

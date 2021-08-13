@@ -13,7 +13,7 @@ body {
             display: flex;
             flex-direction: row;
             .container__task {
-                flex-grow: 1;
+                width: 70%;
                 .container__p {
                     text-transform: uppercase;
                     color: #e9f9f1;
@@ -30,6 +30,7 @@ body {
                 }
             }
             .container__btn {
+                width: 30%;
                 background: #80b386;
                 color: #e4f9f9;
                 font-size: 1.3em;

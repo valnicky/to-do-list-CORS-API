@@ -1,36 +1,39 @@
 const rootendpoint = 'https://api.learnjavascript.today'
 
 const auth = {
-    username: 'your-username',
-    password: 'your-password'
-}
-
-/*zlFetch.post(`${rootendpoint}/users`, {
-        body: {
-            username: 'your-username',
-            password: 'your-password'
-        }
-    })
-    .then(response => console.log(response.body))
-    .catch(error => console.log(error));*/
+        username: 'valery',
+        password: 'v123456'
+    }
+    /*
+    zlFetch.post(`${rootendpoint}/users`, {
+            body: {
+                username: 'valery',
+                password: 'v123456'
+            }
+        })
+        .then(response => console.log(response.body))
+        .catch(error => console.log(error));
+    id: "61165e4fed641c01ca771381"
+    */
 const todolist = document.querySelector('body .container .container__list');
 const emptyStateDiv = todolist.querySelector('.todolist__empty-state');
 const promises = zlFetch(`${rootendpoint}/tasks`, { auth });
 const todolistbtn = document.querySelector('.container__btn');
+const newTaskField = document.querySelector('body .container .container__addtask .container__task .container__eg');
 
-todolistbtn.addEventListener('submit', addtasktodom);
+todolistbtn.addEventListener('click', addtasktodom);
+newTaskField.addEventListener('click', () => {
+    newTaskField.value = '';
+});
 
-
-// .then(response => console.log(response.body))
-
-function makeTaskElement(elem) {
+function makeTaskElement1(elem) {
     const li = document.createElement('li');
     li.innerHTML = `${elem}`;
     // console.log(li);
     return li;
 }
 
-const makeTaskElement1 = ({ id, name, done }) => {
+const makeTaskElement = ({ id, name, done }) => {
     const taskElement = document.createElement('li');
     taskElement.classList.add('task');
     taskElement.innerHTML = (`
@@ -47,22 +50,20 @@ function addtasktodom(event) {
     event.preventDefault()
 
     //get value of task
-    const newTaskField = todolist.querySelector('input');
     const inputValue = newTaskField.value.trim();
-    console.log("input value " + inputValue);
 
-    const id = generateUniqueString(10);
-    const taskElement = makeTaskElement1({
+    /*const id = generateUniqueString(10);
+    const taskElement = makeTaskElement({
         id,
         name: inputValue,
         done: false
-    });
+    });*/
 
     //prevent adding of empty task
     if (!inputValue) return;
 
-//disable btn
-todolistbtn.setAttribute('disabled', true);
+    //disable btn
+    todolistbtn.setAttribute('disabled', true);
     //give indication that we're adding a task
     todolistbtn.textContent = 'Adding task...';
 
@@ -71,31 +72,15 @@ todolistbtn.setAttribute('disabled', true);
             auth,
             body: {
                 // Information about the task
-                name: DOMPurify.sanitize(inputValue)
+                name: inputValue
+                    //DOMPurify.sanitize(
             }
         }).then(response => {
             console.log(response.body);
             //append task to DOM
-            const tasks = response.body;
-            //append tasks to DOM
-            tasks.forEach(task => {
-                const taskElement = makeTaskElement1(task);
-
-                todolist.appendChild(taskElement);
-            })
-        })
-        .catch(error => console.error(error))
-        .finally(_ => {
-            //enables btn 
-            todolistbtn.removeAttribute(''disabled);
-            //change button text back to original text 
-            todolistbtn.textContent = 'Add task';
-        })
-
-    promises.then(response => {
-            //append task to DOM
             const task = response.body;
-            const taskElement = makeTaskElement1(task);
+            //append tasks to DOM
+            const taskElement = makeTaskElement(task);
             todolist.appendChild(taskElement);
 
             //clear the new task field
@@ -103,8 +88,29 @@ todolistbtn.setAttribute('disabled', true);
 
             //bring focus back to input field
             newTaskField.focus();
-            //change empty state text
-            emptyStateDiv.textContent = 'Your todo list is empty!  🎉'
         })
-        .catch(error => console.error(error));
+        .catch(error => console.error(error))
+        .finally(_ => {
+            //enables btn 
+            todolistbtn.removeAttribute('disabled');
+            //change button text back to original text 
+            todolistbtn.textContent = 'Add task';
+        })
+
 }
+
+
+/*
+promises.then(response => {
+        //append tasks to DOM
+        const tasks = response.body;
+        tasks.forEach(task => {
+            const taskElement = makeTaskElement(task);
+            todolist.appendChild(taskElement);
+        })
+
+
+        //change empty state text
+        emptyStateDiv.textContent = 'Your todo list is empty!  🎉'
+    })
+    .catch(error => console.error(error));*/
