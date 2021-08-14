@@ -20,28 +20,30 @@ const emptyStateDiv = todolist.querySelector('.todolist__empty-state');
 const promises = zlFetch(`${rootendpoint}/tasks`, { auth });
 const todolistbtn = document.querySelector('.container__btn');
 const newTaskField = document.querySelector('body .container .container__addtask .container__task .container__eg');
+const taskName = todolist.querySelector('.task .task__name');
+const deleteBtn = todolist.querySelector('.task__delete-button span');
 
 todolistbtn.addEventListener('click', addtasktodom);
 newTaskField.addEventListener('click', () => {
     newTaskField.value = '';
 });
-
+/*
 function makeTaskElement1(elem) {
     const li = document.createElement('li');
     li.innerHTML = `${elem}`;
     // console.log(li);
     return li;
-}
+}*/
 
 const makeTaskElement = ({ id, name, done }) => {
     const taskElement = document.createElement('li');
     taskElement.classList.add('task');
     taskElement.innerHTML = (`
-    <input type="checkbox" id="${id}"/>
-    <label for="${id}">...</label>
-    <span class="task__name">${name}</span>
+    <input type="checkbox" id="${id}" ${done? 'checked' : ''}/>
+    <label for="${id}"></label>
+    <input class="task__name" value="${name}"/>
     <button type="button" class="task__delete-button">
-    <svg viewBox="0 0 20 20">... </svg>
+    <span>&#10062;</span>
     </button>`);
     return taskElement;
 }
@@ -76,7 +78,7 @@ function addtasktodom(event) {
                     //DOMPurify.sanitize(
             }
         }).then(response => {
-            console.log(response.body);
+            //console.log(response.body);
             //append task to DOM
             const task = response.body;
             //append tasks to DOM
@@ -96,11 +98,8 @@ function addtasktodom(event) {
             //change button text back to original text 
             todolistbtn.textContent = 'Add task';
         })
-
 }
 
-
-/*
 promises.then(response => {
         //append tasks to DOM
         const tasks = response.body;
@@ -109,8 +108,108 @@ promises.then(response => {
             todolist.appendChild(taskElement);
         })
 
-
-        //change empty state text
-        emptyStateDiv.textContent = 'Your todo list is empty!  🎉'
+        if (todolist.querySelector('li').length == 0) {
+            //change empty state text
+            emptyStateDiv.textContent = 'Your todo list is empty!  🎉'
+        }
     })
-    .catch(error => console.error(error));*/
+    .catch(error => console.error(error));
+/*
+todolist.addEventListener('change', event => {
+    if (!event.target.matches('input[type="checkbox"]')) {
+        return
+    }
+    const checkbox = event.target;
+    const id = checkbox.id;
+    const done = checkbox.checked;
+
+    zlFetch.put(`${rootendpoint}/tasks/${id}`, {
+            auth,
+            body: {
+                done
+            }
+        })
+        .then(response => { // console.log(response.body)
+        })
+        .catch(error => console.error(error))
+});*/
+
+todolist.addEventListener('input', event => {
+    const taskElement = event.target.parentElement;
+    const checkbox = taskElement.querySelector('input[type="checkbox"]');
+    const taskInput = taskElement.querySelector('.task__name');
+
+    const id = checkbox.id;
+    const done = checkbox.checked;
+
+    const name = taskInput.value.trim();
+    /*
+        if (!event.target.matches('.task__name')) return;
+        const input = event.target;
+        const inputValue = (input.value.trim());*/
+
+    //console.log(id);
+
+    zlFetch.put(`${rootendpoint}/tasks/${id}`, {
+            auth,
+            body: {
+                name,
+                done
+            }
+        })
+        .then(response => {
+            console.log(response.body);
+        })
+        .catch(error => console.error(error));
+});
+
+function debounce(callback, wait, immediate) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        const later = function() {
+            timeout = null;
+            if (!immediate) callback.apply(context, args)
+        }
+        const callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) callback.apply(context, args);
+    }
+}
+
+const debouncedFunction = debounce(event => {
+    const taskElement = event.target.parentElement;
+    const checkbox = taskElement.querySelector('input[type="checkbox"]');
+    const taskInput = taskElement.querySelector('.task__name');
+
+    const id = checkbox.id;
+    const done = checkbox.checked;
+
+    const name = taskInput.value.trim();
+
+    zlFetch.put(`${rootendpoint}/tasks/${id}`, {
+            auth,
+            body: {
+                name,
+                done
+            }
+        })
+        .then(response => {
+            //  console.log(response.body);
+        })
+        .catch(error => console.error(error));
+
+}, 250);
+
+todolist.addEventListener('input', debouncedFunction);
+
+deleteBtn.addEventListener('click', event => {
+    const target = event.target;
+    console.log(target);
+
+    zlFetch.delete(`${rootendpoint}/tasks/${id}`, { auth })
+        .then(response => console.log(response.body))
+        .catch(error => console.error(error))
+});

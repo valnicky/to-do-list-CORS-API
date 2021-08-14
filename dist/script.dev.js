@@ -24,17 +24,19 @@ var promises = zlFetch("".concat(rootendpoint, "/tasks"), {
 });
 var todolistbtn = document.querySelector('.container__btn');
 var newTaskField = document.querySelector('body .container .container__addtask .container__task .container__eg');
+var taskName = todolist.querySelector('.task .task__name');
+var deleteBtn = todolist.querySelector('.task__delete-button span');
 todolistbtn.addEventListener('click', addtasktodom);
 newTaskField.addEventListener('click', function () {
   newTaskField.value = '';
 });
-
+/*
 function makeTaskElement1(elem) {
-  var li = document.createElement('li');
-  li.innerHTML = "".concat(elem); // console.log(li);
-
-  return li;
-}
+    const li = document.createElement('li');
+    li.innerHTML = `${elem}`;
+    // console.log(li);
+    return li;
+}*/
 
 var makeTaskElement = function makeTaskElement(_ref) {
   var id = _ref.id,
@@ -42,7 +44,7 @@ var makeTaskElement = function makeTaskElement(_ref) {
       done = _ref.done;
   var taskElement = document.createElement('li');
   taskElement.classList.add('task');
-  taskElement.innerHTML = "\n    <input type=\"checkbox\" id=\"".concat(id, "\"/>\n    <label for=\"").concat(id, "\">...</label>\n    <span class=\"task__name\">").concat(name, "</span>\n    <button type=\"button\" class=\"task__delete-button\">\n    <svg viewBox=\"0 0 20 20\">... </svg>\n    </button>");
+  taskElement.innerHTML = "\n    <input type=\"checkbox\" id=\"".concat(id, "\" ").concat(done ? 'checked' : '', "/>\n    <label for=\"").concat(id, "\"></label>\n    <input class=\"task__name\" value=\"").concat(name, "\"/>\n    <button type=\"button\" class=\"task__delete-button\">\n    <span>&#10062;</span>\n    </button>");
   return taskElement;
 };
 
@@ -72,8 +74,8 @@ function addtasktodom(event) {
 
     }
   }).then(function (response) {
-    console.log(response.body); //append task to DOM
-
+    //console.log(response.body);
+    //append task to DOM
     var task = response.body; //append tasks to DOM
 
     var taskElement = makeTaskElement(task);
@@ -91,17 +93,113 @@ function addtasktodom(event) {
     todolistbtn.textContent = 'Add task';
   });
 }
+
+promises.then(function (response) {
+  //append tasks to DOM
+  var tasks = response.body;
+  tasks.forEach(function (task) {
+    var taskElement = makeTaskElement(task);
+    todolist.appendChild(taskElement);
+  });
+
+  if (todolist.querySelector('li').length == 0) {
+    //change empty state text
+    emptyStateDiv.textContent = 'Your todo list is empty!  🎉';
+  }
+})["catch"](function (error) {
+  return console.error(error);
+});
 /*
-promises.then(response => {
-        //append tasks to DOM
-        const tasks = response.body;
-        tasks.forEach(task => {
-            const taskElement = makeTaskElement(task);
-            todolist.appendChild(taskElement);
+todolist.addEventListener('change', event => {
+    if (!event.target.matches('input[type="checkbox"]')) {
+        return
+    }
+    const checkbox = event.target;
+    const id = checkbox.id;
+    const done = checkbox.checked;
+
+    zlFetch.put(`${rootendpoint}/tasks/${id}`, {
+            auth,
+            body: {
+                done
+            }
         })
+        .then(response => { // console.log(response.body)
+        })
+        .catch(error => console.error(error))
+});*/
 
+todolist.addEventListener('input', function (event) {
+  var taskElement = event.target.parentElement;
+  var checkbox = taskElement.querySelector('input[type="checkbox"]');
+  var taskInput = taskElement.querySelector('.task__name');
+  var id = checkbox.id;
+  var done = checkbox.checked;
+  var name = taskInput.value.trim();
+  /*
+      if (!event.target.matches('.task__name')) return;
+      const input = event.target;
+      const inputValue = (input.value.trim());*/
+  //console.log(id);
 
-        //change empty state text
-        emptyStateDiv.textContent = 'Your todo list is empty!  🎉'
-    })
-    .catch(error => console.error(error));*/
+  zlFetch.put("".concat(rootendpoint, "/tasks/").concat(id), {
+    auth: auth,
+    body: {
+      name: name,
+      done: done
+    }
+  }).then(function (response) {
+    console.log(response.body);
+  })["catch"](function (error) {
+    return console.error(error);
+  });
+});
+
+function debounce(callback, wait, immediate) {
+  var timeout;
+  return function () {
+    var context = this;
+    var args = arguments;
+
+    var later = function later() {
+      timeout = null;
+      if (!immediate) callback.apply(context, args);
+    };
+
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) callback.apply(context, args);
+  };
+}
+
+var debouncedFunction = debounce(function (event) {
+  var taskElement = event.target.parentElement;
+  var checkbox = taskElement.querySelector('input[type="checkbox"]');
+  var taskInput = taskElement.querySelector('.task__name');
+  var id = checkbox.id;
+  var done = checkbox.checked;
+  var name = taskInput.value.trim();
+  zlFetch.put("".concat(rootendpoint, "/tasks/").concat(id), {
+    auth: auth,
+    body: {
+      name: name,
+      done: done
+    }
+  }).then(function (response) {//  console.log(response.body);
+  })["catch"](function (error) {
+    return console.error(error);
+  });
+}, 250);
+todolist.addEventListener('input', debouncedFunction);
+deleteBtn.addEventListener('click', function (event) {
+  var target = event.target;
+  console.log(target);
+  zlFetch["delete"]("".concat(rootendpoint, "/tasks/").concat(id), {
+    auth: auth
+  }).then(function (response) {
+    return console.log(response.body);
+  })["catch"](function (error) {
+    return console.error(error);
+  });
+});

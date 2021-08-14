@@ -37,12 +37,30 @@ body .container .container__addtask .container__btn {
   font-size: 1.3em;
 }
 body .container .container__list {
-  padding: 1em 2em;
+  padding: 2em 8em 3em 6em;
   background: #ededfb;
   color: #141c8a;
 }
-body .container li {
+body .container .container__list li {
   padding: 5px;
   margin: 5px;
   font-size: 1.2em;
+}
+body .container .container__list li .task__name {
+  background: #ededfb;
+  color: #141c8a;
+  border: none;
+  cursor: pointer;
+}
+body .container .container__list li .task__delete-button {
+  border: none;
+  padding: 0;
+  float: right;
+  cursor: pointer;
+}
+body .container .container__list li .task__delete-button span {
+  font-size: 20px;
+}
+body .container .container__list .todolist__empty-state {
+  display: none;
 }

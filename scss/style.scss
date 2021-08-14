@@ -37,14 +37,32 @@ body {
             }
         }
         .container__list {
-            padding: 1em 2em;
+            padding: 2em 8em 3em 6em;
             background: #ededfb;
             color: #141c8a;
-        }
-        li {
-            padding: 5px;
-            margin: 5px;
-            font-size: 1.2em;
+            li {
+                padding: 5px;
+                margin: 5px;
+                font-size: 1.2em;
+                .task__name {
+                    background: #ededfb;
+                    color: #141c8a;
+                    border: none;
+                    cursor: pointer;
+                }
+                .task__delete-button {
+                    border: none;
+                    padding: 0;
+                    float: right;
+                    cursor: pointer;
+                    span {
+                        font-size: 20px;
+                    }
+                }
+            }
+            .todolist__empty-state {
+                display: none;
+            }
         }
     }
 }
