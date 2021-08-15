@@ -25,7 +25,7 @@ var promises = zlFetch("".concat(rootendpoint, "/tasks"), {
 var todolistbtn = document.querySelector('.container__btn');
 var newTaskField = document.querySelector('body .container .container__addtask .container__task .container__eg');
 var taskName = todolist.querySelector('.task .task__name');
-var deleteBtn = todolist.querySelector('.task__delete-button span');
+var deleteBtn = todolist.querySelector('.task__delete-button');
 todolistbtn.addEventListener('click', addtasktodom);
 newTaskField.addEventListener('click', function () {
   newTaskField.value = '';
@@ -192,13 +192,19 @@ var debouncedFunction = debounce(function (event) {
   });
 }, 250);
 todolist.addEventListener('input', debouncedFunction);
-deleteBtn.addEventListener('click', function (event) {
+todolist.addEventListener('click', function (event) {
   var target = event.target;
-  console.log(target);
+  var taskElement = event.target.parentElement.parentElement;
+  var checkbox = taskElement.querySelector('input[type="checkbox"]');
+  var id = checkbox.id; //console.log(target);
+
   zlFetch["delete"]("".concat(rootendpoint, "/tasks/").concat(id), {
     auth: auth
   }).then(function (response) {
-    return console.log(response.body);
+    todolist.removeChild(taskElement); //console.log(response.body);
+    //triggers empty state
+
+    if (todolist.children.length === 0) taskList.innerHTML = '';
   })["catch"](function (error) {
     return console.error(error);
   });

@@ -21,7 +21,7 @@ const promises = zlFetch(`${rootendpoint}/tasks`, { auth });
 const todolistbtn = document.querySelector('.container__btn');
 const newTaskField = document.querySelector('body .container .container__addtask .container__task .container__eg');
 const taskName = todolist.querySelector('.task .task__name');
-const deleteBtn = todolist.querySelector('.task__delete-button span');
+const deleteBtn = todolist.querySelector('.task__delete-button');
 
 todolistbtn.addEventListener('click', addtasktodom);
 newTaskField.addEventListener('click', () => {
@@ -205,11 +205,19 @@ const debouncedFunction = debounce(event => {
 
 todolist.addEventListener('input', debouncedFunction);
 
-deleteBtn.addEventListener('click', event => {
+todolist.addEventListener('click', event => {
     const target = event.target;
-    console.log(target);
+    const taskElement = event.target.parentElement.parentElement;
+    const checkbox = taskElement.querySelector('input[type="checkbox"]');
+    const id = checkbox.id;
+    //console.log(target);
 
     zlFetch.delete(`${rootendpoint}/tasks/${id}`, { auth })
-        .then(response => console.log(response.body))
+        .then(response => {
+            todolist.removeChild(taskElement);
+            //console.log(response.body);
+            //triggers empty state
+            if (todolist.children.length === 0) taskList.innerHTML = '';
+        })
         .catch(error => console.error(error))
 });
