@@ -18,7 +18,7 @@ id: "61165e4fed641c01ca771381"
 */
 
 var todolist = document.querySelector('body .container .container__list');
-var emptyStateDiv = todolist.querySelector('.todolist__empty-state');
+var emptyStateDiv = todolist.querySelector('body .container .container__list .todolist__empty-state');
 var promises = zlFetch("".concat(rootendpoint, "/tasks"), {
   auth: auth
 });
@@ -64,7 +64,8 @@ function addtasktodom(event) {
 
   todolistbtn.setAttribute('disabled', true); //give indication that we're adding a task
 
-  todolistbtn.textContent = 'Adding task...'; //sends POST request...
+  todolistbtn.textContent = 'Adding task...';
+  emptyStateDiv.innerHTML = '   Fetching your tasks... Please wait a bit... ⏰'; //sends POST request...
 
   zlFetch.post("".concat(rootendpoint, "/tasks"), {
     auth: auth,
@@ -83,7 +84,9 @@ function addtasktodom(event) {
 
     newTaskField.value = ''; //bring focus back to input field
 
-    newTaskField.focus();
+    newTaskField.focus(); //clear empty div
+
+    emptyStateDiv.innerHTML = '';
   })["catch"](function (error) {
     return console.error(error);
   })["finally"](function (_) {
@@ -100,11 +103,14 @@ promises.then(function (response) {
   tasks.forEach(function (task) {
     var taskElement = makeTaskElement(task);
     todolist.appendChild(taskElement);
+    emptyStateDiv.innerHTML = '';
   });
 
-  if (todolist.querySelector('li').length == 0) {
+  if (todolist.childElementCount === 1 || todolist.childElementCount === 0) {
     //change empty state text
     emptyStateDiv.textContent = 'Your todo list is empty!  🎉';
+  } else {
+    emptyStateDiv.textContent = '';
   }
 })["catch"](function (error) {
   return console.error(error);
@@ -148,8 +154,7 @@ todolist.addEventListener('input', function (event) {
       name: name,
       done: done
     }
-  }).then(function (response) {
-    console.log(response.body);
+  }).then(function (response) {//  console.log(response.body);
   })["catch"](function (error) {
     return console.error(error);
   });
@@ -193,18 +198,26 @@ var debouncedFunction = debounce(function (event) {
 }, 250);
 todolist.addEventListener('input', debouncedFunction);
 todolist.addEventListener('click', function (event) {
-  var target = event.target;
-  var taskElement = event.target.parentElement.parentElement;
+  var tg = event.target;
+  if (!tg.matches('span')) return; // Removes the task
+
+  var taskElement = tg.parentElement.parentElement;
   var checkbox = taskElement.querySelector('input[type="checkbox"]');
-  var id = checkbox.id; //console.log(target);
+  var id = checkbox.id; // console.log(taskElement);
 
   zlFetch["delete"]("".concat(rootendpoint, "/tasks/").concat(id), {
     auth: auth
   }).then(function (response) {
-    todolist.removeChild(taskElement); //console.log(response.body);
-    //triggers empty state
+    todolist.removeChild(taskElement);
 
-    if (todolist.children.length === 0) taskList.innerHTML = '';
+    if (todolist.childElementCount === 1 || todolist.childElementCount === 0) {
+      //change empty state text
+      emptyStateDiv.textContent = 'Your todo list is empty!  🎉';
+      emptyStateDiv.setAttribute('display', 'block');
+    } else {
+      // todolist.innerHTML = ''
+      emptyStateDiv.setAttribute('display', 'none');
+    }
   })["catch"](function (error) {
     return console.error(error);
   });

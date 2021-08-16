@@ -61,6 +61,3 @@ body .container .container__list li .task__delete-button {
 body .container .container__list li .task__delete-button span {
   font-size: 20px;
 }
-body .container .container__list .todolist__empty-state {
-  display: none;
-}
