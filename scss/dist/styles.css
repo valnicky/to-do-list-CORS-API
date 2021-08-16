@@ -1,3 +1,4 @@
+@charset "UTF-8";
 body {
   width: 100%;
   margin: 0;
@@ -75,10 +76,19 @@ body .container .container__list li input[type=checkbox]:before {
   left: -19px;
   background-color: #edf5ee;
   border: 1px solid #333;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px 1px 3px rgba(0, 0, 0, 0.1);
 }
 body .container .container__list li input[type=checkbox]:checked:before {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px 1px 3px rgba(0, 0, 0, 0.1);
   background-color: #81ce85;
+}
+body .container .container__list li input[type=checkbox]:checked:after {
+  content: "✔";
+  font-size: 2.5em;
+  position: absolute;
+  top: 0;
+  left: -12px;
+  color: #fafbfc;
 }
 body .container .container__list .task__delete-button {
   border: none;
@@ -132,6 +142,10 @@ body .container .container__addtask .container__task .container__eg::placeholder
     width: 2.5em;
     height: 2.5em;
     left: -8px;
+  }
+  body .container .container__list li input[type=checkbox]:checked:after {
+    left: -5px;
+    font-size: 2.3em;
   }
   body .container .container__list .task__delete-button span {
     font-size: 25px;
