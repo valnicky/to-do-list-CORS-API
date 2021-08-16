@@ -1,8 +1,10 @@
 body {
   width: 100%;
+  margin: 0;
 }
 body .container {
   width: 80%;
+  margin: 0 10%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -17,6 +19,7 @@ body .container .container__addtask {
 }
 body .container .container__addtask .container__task {
   width: 70%;
+  margin-left: 5%;
 }
 body .container .container__addtask .container__task .container__p {
   text-transform: uppercase;
@@ -33,7 +36,8 @@ body .container .container__addtask .container__task .container__eg ::placeholde
   font-style: italic;
 }
 body .container .container__addtask .container__btn {
-  width: 30%;
+  width: 20%;
+  margin-right: 5%;
   background: #80b386;
   color: #e4f9f9;
   font-size: 1.3em;
@@ -91,38 +95,45 @@ body .container .todolist__empty-state {
   font-size: 1.5em;
 }
 @media only screen and (max-width: 768px) {
-  body .container {
-    font-size: 1em;
-  }
-  body .container .task {
-    width: 100%;
-  }
-}
-@media only screen and (max-width: 768px) {
   body * {
     font-size: 0.8em;
   }
   body .container {
     width: 100%;
+    margin: 0;
+    font-size: 0.8em;
   }
   body .container .container__addtask {
     font-size: 0.8em;
+    padding: 1em 0em;
+    width: 100%;
   }
   body .container .container__addtask .container__btn {
     font-size: 0.8em;
   }
+  body .container .container__addtask .conatiner__task .container__eg,
+body .container .container__addtask .container__task .container__eg::placeholder {
+    font-size: 1.2em;
+    margin-top: 10px;
+  }
   body .container .container__list {
     width: 100%;
-    padding: 2em 1em 3em 1em;
-  }
-  body .container .container__list .container__eg::placeholder {
-    font-size: 0.8em;
+    padding: 0 10px;
   }
   body .container .container__list .task {
-    width: 100%;
-    margin: 0;
+    width: 80%;
+    padding: 5px 0;
+    margin: 25px 5%;
   }
   body .container .container__list .task .task__name {
     font-size: 0.8em;
+  }
+  body .container .container__list .task input[type=checkbox]:before {
+    width: 2.5em;
+    height: 2.5em;
+    left: -8px;
+  }
+  body .container .container__list .task__delete-button span {
+    font-size: 25px;
   }
 }
